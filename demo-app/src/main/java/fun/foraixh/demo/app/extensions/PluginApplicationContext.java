@@ -1,5 +1,7 @@
 package fun.foraixh.demo.app.extensions;
 
+import fun.foraixh.definition.Greeting;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.util.StopWatch;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 /**
  * @Author foraixh
@@ -35,11 +38,21 @@ public class PluginApplicationContext {
         PluginWrapper plugin = springPluginManager.getPlugin(pluginId);
         ClassLoader pluginClassLoader = plugin.getPluginClassLoader();
 
-        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(plugin.getPlugin().getClass());
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(
+            plugin.getDescriptor().getPluginClass()
+                .substring(0, plugin.getDescriptor().getPluginClass().lastIndexOf("."))
+        );
+        // AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
         log.info("Create applicationContext for '{}'", pluginId);
 
         DefaultResourceLoader defaultResourceLoader = new DefaultResourceLoader(pluginClassLoader);
         applicationContext.setResourceLoader(defaultResourceLoader);
+        // applicationContext.setClassLoader(pluginClassLoader);
+        //
+        // applicationContext.scan(plugin.getDescriptor().getPluginClass()
+        //     .substring(0, plugin.getDescriptor().getPluginClass().lastIndexOf(".")));
+        // applicationContext.refresh();
+        log.info("ApplicationContext created, has beans = " + Arrays.toString(applicationContext.getBeanDefinitionNames()));
 
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getBeanFactory();
 
@@ -49,5 +62,9 @@ public class PluginApplicationContext {
         registry.put(pluginId, applicationContext);
 
         return applicationContext;
+    }
+
+    public ApplicationContext getApplicationContext(String pluginId) {
+        return registry.get(pluginId);
     }
 }

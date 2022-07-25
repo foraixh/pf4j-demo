@@ -25,8 +25,7 @@ import org.springframework.context.ApplicationContextAware;
 @Slf4j
 public class SpringPluginManager extends DefaultPluginManager implements ApplicationContextAware, InitializingBean {
     private PluginApplicationContext pluginApplicationContext;
-    // TODO 从这里开始
-    // private PluginRequestMappingManager requestMappingManager;
+    private PluginRequestMappingManager requestMappingManager;
 
     public SpringPluginManager() {
     }
@@ -41,6 +40,10 @@ public class SpringPluginManager extends DefaultPluginManager implements Applica
 
     private ApplicationContext applicationContext;
 
+    public PluginApplicationContext getPluginApplicationContext() {
+        return pluginApplicationContext;
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
@@ -49,6 +52,11 @@ public class SpringPluginManager extends DefaultPluginManager implements Applica
     @Override
     public void afterPropertiesSet() {
         pluginApplicationContext = new PluginApplicationContext(this);
+
+        requestMappingManager = applicationContext.getBean(PluginRequestMappingManager.class);
+
+        this.loadPlugins();
+        this.startPlugins();
     }
 
     @Override
@@ -71,6 +79,7 @@ public class SpringPluginManager extends DefaultPluginManager implements Applica
 
                     // DESC 注册plugin到applicationContext中，SpringExtensionFactory可以获取到
                     registerBeanWithPlugin(pluginWrapper);
+                    requestMappingManager.registerControllers(pluginWrapper);
 
                     pluginWrapper.getPlugin().start();
                     pluginWrapper.setPluginState(PluginState.STARTED);
@@ -120,6 +129,7 @@ public class SpringPluginManager extends DefaultPluginManager implements Applica
 
         // DESC 注册plugin到applicationContext中，SpringExtensionFactory可以获取到
         registerBeanWithPlugin(pluginWrapper);
+        requestMappingManager.registerControllers(pluginWrapper);
 
         log.info("Start plugin '{}'", getPluginLabel(pluginDescriptor));
         pluginWrapper.getPlugin().start();
