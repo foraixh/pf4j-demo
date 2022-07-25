@@ -9,6 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.pf4j.Extension;
 import org.pf4j.PluginWrapper;
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
+import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -61,7 +64,10 @@ public class PluginApplicationContext {
         Set<Class<?>> candidateComponents = findCandidateComponents(pluginId);
         for (Class<?> component : candidateComponents) {
             log.debug("Register a plugin component class [{}] to context", component);
-            applicationContext.registerBean(component);
+            AnnotatedBeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition(component);
+            AnnotationConfigUtils.processCommonDefinitionAnnotations(beanDefinition);
+
+            applicationContext.registerBean(component, beanDefinition);
         }
 
         registerBean(applicationContext, pluginId);
