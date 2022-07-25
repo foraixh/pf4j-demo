@@ -1,7 +1,10 @@
 package fun.foraixh.demo.app.extensions;
 
+import java.util.Optional;
 import org.pf4j.ExtensionFactory;
+import org.pf4j.Plugin;
 import org.pf4j.PluginManager;
+import org.pf4j.PluginWrapper;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -11,14 +14,22 @@ import org.springframework.context.ApplicationContext;
  * @Usage usage
  */
 public class SpringExtensionFactory implements ExtensionFactory {
-    private ApplicationContext applicationContext;
+    private SpringPluginManager springPluginManager;
 
-    public SpringExtensionFactory(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public SpringExtensionFactory(SpringPluginManager springPluginManager) {
+        this.springPluginManager = springPluginManager;
     }
 
     @Override
     public <T> T create(Class<T> extensionClass) {
-        return applicationContext.getBean(extensionClass);
+        PluginWrapper pluginWrapper = this.springPluginManager.whichPlugin(extensionClass);
+        if (pluginWrapper == null) {
+            throw new RuntimeException("there is no pluginWrapper for extensionClass: " +
+                extensionClass.getSimpleName());
+        }
+
+        return springPluginManager.getPluginApplicationContext()
+            .getApplicationContext(pluginWrapper.getPluginId()).getBean(extensionClass);
+
     }
 }

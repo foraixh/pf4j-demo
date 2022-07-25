@@ -25,7 +25,7 @@ import org.pf4j.processor.ExtensionStorage;
  */
 @Slf4j
 public class SpringExtensionFinder extends AbstractExtensionFinder {
-    public static final String EXTENSIONS_RESOURCE = "META-INF/plugin-components.idx";
+    public static final String EXTENSIONS_RESOURCE = "META-INF/extensions.idx";
 
     public SpringExtensionFinder(SpringPluginManager pluginManager) {
         super(pluginManager);

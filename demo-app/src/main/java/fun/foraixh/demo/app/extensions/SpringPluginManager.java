@@ -49,6 +49,10 @@ public class SpringPluginManager extends DefaultPluginManager implements Applica
         this.applicationContext = applicationContext;
     }
 
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
     @Override
     public void afterPropertiesSet() {
         pluginApplicationContext = new PluginApplicationContext(this);
@@ -61,7 +65,7 @@ public class SpringPluginManager extends DefaultPluginManager implements Applica
 
     @Override
     protected ExtensionFactory createExtensionFactory() {
-        return new SpringExtensionFactory(applicationContext);
+        return new SpringExtensionFactory(this);
     }
 
     @Override

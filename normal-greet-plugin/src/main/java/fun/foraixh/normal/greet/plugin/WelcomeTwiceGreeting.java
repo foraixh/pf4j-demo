@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
  * @Usage usage
  */
 @Extension
-@Component
 public class WelcomeTwiceGreeting implements Greeting {
 
     @Override

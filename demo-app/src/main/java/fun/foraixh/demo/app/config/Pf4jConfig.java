@@ -23,8 +23,12 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 @Slf4j
 @EnableWebMvc
 public class Pf4jConfig {
-    @Autowired
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+    public Pf4jConfig(
+        RequestMappingHandlerMapping requestMappingHandlerMapping) {
+        this.requestMappingHandlerMapping = requestMappingHandlerMapping;
+    }
 
     @Bean
     public PluginRequestMappingManager pluginRequestMappingManager() {
