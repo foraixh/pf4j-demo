@@ -41,6 +41,11 @@
         </dependency>
         <dependency>
             <groupId>fun.foraixh</groupId>
+            <artifactId>demo-app</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>fun.foraixh</groupId>
             <artifactId>plugin-definition</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>

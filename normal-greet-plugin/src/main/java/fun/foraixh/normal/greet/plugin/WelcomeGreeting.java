@@ -1,6 +1,7 @@
 package fun.foraixh.normal.greet.plugin;
 
 import fun.foraixh.definition.Greeting;
+import fun.foraixh.demo.app.handler.AppHandler;
 import lombok.NoArgsConstructor;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class WelcomeGreeting implements Greeting {
     @Autowired
     private DemoHandler demoHandler;
 
+    @Autowired
+    private AppHandler appHandle;
+
     // public WelcomeGreeting() {
     //
     // }
@@ -27,6 +31,11 @@ public class WelcomeGreeting implements Greeting {
     // public WelcomeGreeting(DemoHandler demoHandler) {
     //     this.demoHandler = demoHandler;
     // }
+
+    @GetMapping("/demo/appHandle")
+    public String appHandle(String str) {
+        return appHandle.demo(str);
+    }
 
     @GetMapping("/demo/test11")
     public String test10(String str) {
