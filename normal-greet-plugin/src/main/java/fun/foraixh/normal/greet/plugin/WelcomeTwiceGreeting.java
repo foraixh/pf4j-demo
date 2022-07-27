@@ -1,6 +1,7 @@
 package fun.foraixh.normal.greet.plugin;
 
 import fun.foraixh.definition.Greeting;
+import lombok.NoArgsConstructor;
 import org.pf4j.Extension;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
  * @Usage usage
  */
 @Extension
+@NoArgsConstructor
 public class WelcomeTwiceGreeting implements Greeting {
 
     @Override

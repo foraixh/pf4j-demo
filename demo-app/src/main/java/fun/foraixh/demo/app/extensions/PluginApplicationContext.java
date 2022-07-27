@@ -45,10 +45,7 @@ public class PluginApplicationContext {
         PluginWrapper plugin = springPluginManager.getPlugin(pluginId);
         ClassLoader pluginClassLoader = plugin.getPluginClassLoader();
 
-        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-            plugin.getDescriptor().getPluginClass()
-                .substring(0, plugin.getDescriptor().getPluginClass().lastIndexOf("."))
-        );
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
         log.info("Create applicationContext for '{}'", pluginId);
 
         applicationContext.setParent(springPluginManager.getApplicationContext());
@@ -57,6 +54,11 @@ public class PluginApplicationContext {
         DefaultResourceLoader defaultResourceLoader = new DefaultResourceLoader(pluginClassLoader);
         applicationContext.setResourceLoader(defaultResourceLoader);
 
+        applicationContext.getBeanFactory().setBeanClassLoader(pluginClassLoader);
+
+        applicationContext.scan(plugin.getDescriptor().getPluginClass()
+            .substring(0, plugin.getDescriptor().getPluginClass().lastIndexOf(".")));
+
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getBeanFactory();
         log.info("registerAnnotationConfigProcessors");
         AnnotationConfigUtils.registerAnnotationConfigProcessors(beanFactory);
@@ -64,20 +66,20 @@ public class PluginApplicationContext {
         Set<Class<?>> candidateComponents = findCandidateComponents(pluginId);
         for (Class<?> component : candidateComponents) {
             log.debug("Register a plugin component class [{}] to context", component);
-            AnnotatedBeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition(component);
-            AnnotationConfigUtils.processCommonDefinitionAnnotations(beanDefinition);
+            // AnnotatedBeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition(component);
+            // AnnotationConfigUtils.processCommonDefinitionAnnotations(beanDefinition);
+            //
+            // applicationContext.registerBean(component, beanDefinition);
 
-            applicationContext.registerBean(component, beanDefinition);
+            applicationContext.register(component);
         }
 
-        registerBean(applicationContext, pluginId);
+        // registerBean(applicationContext, pluginId);
         log.info("ApplicationContext created, has beans = " + Arrays.toString(applicationContext.getBeanDefinitionNames()));
+        applicationContext.refresh();
 
         registry.put(pluginId, applicationContext);
 
-        applicationContext.scan(plugin.getDescriptor().getPluginClass()
-            .substring(0, plugin.getDescriptor().getPluginClass().lastIndexOf(".")));
-        applicationContext.getBeanFactory().setBeanClassLoader(pluginClassLoader);
 
         return applicationContext;
     }
@@ -104,10 +106,6 @@ public class PluginApplicationContext {
         }
 
         return candidateComponents;
-    }
-
-    public void registerBean(ApplicationContext applicationContext, String pluginId) {
-
     }
 
     public ApplicationContext getApplicationContext(String pluginId) {

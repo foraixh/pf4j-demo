@@ -14,14 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
  * @Usage usage
  */
 @Extension
-@RestController
 @NoArgsConstructor
+@RestController
 public class WelcomeGreeting implements Greeting {
+    @Autowired
     private DemoHandler demoHandler;
 
-    public WelcomeGreeting(DemoHandler demoHandler) {
-        this.demoHandler = demoHandler;
-    }
+    // public WelcomeGreeting() {
+    //
+    // }
+
+    // public WelcomeGreeting(DemoHandler demoHandler) {
+    //     this.demoHandler = demoHandler;
+    // }
 
     @GetMapping("/demo/test11")
     public String test10(String str) {

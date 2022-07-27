@@ -3,6 +3,7 @@ package fun.foraixh.demo.app.extensions;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.pf4j.PluginWrapper;
 import org.springframework.context.ApplicationContext;
@@ -71,5 +72,6 @@ public class PluginRequestMappingManager {
     public Collection<Object> getControllerBeans(SpringPluginManager pluginManager, String pluginId) {
         ApplicationContext applicationContext = pluginManager.getPluginApplicationContext().getApplicationContext(pluginId);
         return applicationContext.getBeansWithAnnotation(Controller.class).values();
+        // return Collections.emptyList();
     }
 }

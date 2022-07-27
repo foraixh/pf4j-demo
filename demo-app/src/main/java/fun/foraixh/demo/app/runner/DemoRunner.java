@@ -1,6 +1,7 @@
 package fun.foraixh.demo.app.runner;
 
 import fun.foraixh.definition.Greeting;
+import fun.foraixh.demo.app.extensions.SpringPluginManager;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.pf4j.PluginManager;
@@ -31,5 +32,9 @@ public class DemoRunner implements CommandLineRunner {
         for (Greeting greeting : greetings) {
             System.out.println(">>> " + greeting.greet("foraixh"));
         }
+
+        // ((SpringPluginManager) pluginManager).getPluginApplicationContext()
+        //     .getApplicationContext("")
+        //     .getBean("welcomeGreeting");
     }
 }
