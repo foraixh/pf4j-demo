@@ -75,6 +75,10 @@ public class PluginApplicationContext {
 
         registry.put(pluginId, applicationContext);
 
+        applicationContext.scan(plugin.getDescriptor().getPluginClass()
+            .substring(0, plugin.getDescriptor().getPluginClass().lastIndexOf(".")));
+        applicationContext.getBeanFactory().setBeanClassLoader(pluginClassLoader);
+
         return applicationContext;
     }
 
